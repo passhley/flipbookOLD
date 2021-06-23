@@ -1,0 +1,14 @@
+{
+	"name": "hoarcekat 2",
+	"tree": {
+		"$className": "DataModel",
+
+		"ServerScriptService": {
+			"$className": "ServerScriptService",
+
+			"Flipbook": {
+				"$path": "src"
+			}
+		}
+	}
+}

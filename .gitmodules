@@ -1,0 +1,18 @@
+[submodule "src/vendor/Roact"]
+	path = src/vendor/Roact
+	url = https://github.com/roblox/roact
+[submodule "src/vendor/Hooks"]
+	path = src/vendor/Hooks
+	url = https://github.com/kampfkarren/roact-hooks
+[submodule "src/vendor/Flipper"]
+	path = src/vendor/Flipper
+	url = https://github.com/Reselim/Flipper
+[submodule "src/vendor/RoactFlipper"]
+	path = src/vendor/RoactFlipper
+	url = https://github.com/Reselim/roact-flipper
+[submodule "src/vendor/RoactRodux"]
+	path = src/vendor/RoactRodux
+	url = https://github.com/roblox/roact-rodux
+[submodule "src/vendor/Rodux"]
+	path = src/vendor/Rodux
+	url = https://github.com/roblox/rodux
