@@ -2,11 +2,14 @@ local Flipbook = script:FindFirstAncestor("Flipbook")
 local Vendor = Flipbook.vendor
 
 local Roact = require(Vendor.Roact)
+local Hooks = require(Vendor.Hooks)
 
 local e = Roact.createElement
+local hook = Hooks.new(Roact)
 
-local function Topbar(props)
+local function Topbar(props, hooks)
 	local theme = props.Theme
+	local selected, setSelected = hooks.useState("Controls")
 
 	return e("Frame", {
 		Size = UDim2.new(1, 0, 0, 50),
@@ -46,7 +49,11 @@ local function Topbar(props)
 					Text = "Canvas",
 					Font = Enum.Font.Gotham,
 					TextSize = 16,
-					TextColor3 = theme.Storylist.Selected
+					TextColor3 = selected == "Canvas" and theme.Storylist.Selected or theme.Text,
+					[Roact.Event.Activated] = function()
+						setSelected("Canvas")
+						props.SetCurrentPage("Canvas")
+					end
 				}),
 
 				Docs = e("TextButton", {
@@ -56,7 +63,11 @@ local function Topbar(props)
 					Text = "Docs",
 					Font = Enum.Font.Gotham,
 					TextSize = 16,
-					TextColor3 = theme.Border
+					TextColor3 = selected == "Docs" and theme.Storylist.Selected or theme.Text,
+					[Roact.Event.Activated] = function()
+						setSelected("Docs")
+						props.SetCurrentPage("Docs")
+					end
 				})
 
 			}),
@@ -71,10 +82,10 @@ local function Topbar(props)
 		}),
 
 		SelectedBorder = e("Frame", {
-			Size = UDim2.new(0, 65, 0, 4),
+			Size = selected == "Canvas" and UDim2.new(0, 70, 0, 4) or UDim2.new(0, 55, 0, 4),
 			BorderSizePixel = 0,
 			BackgroundColor3 = theme.Storylist.Selected,
-			Position = UDim2.new(0, 15, 1, -4)
+			Position = selected == "Canvas" and UDim2.new(0, 12, 1, -4) or UDim2.new(0, 95, 1, -4)
 		}),
 
 		BottomBorder = e("Frame", {
@@ -85,5 +96,7 @@ local function Topbar(props)
 		})
 	})
 end
+
+Topbar = hook(Topbar)
 
 return Topbar

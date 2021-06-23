@@ -3,6 +3,7 @@ local Components = Flipbook.components
 local Vendor = Flipbook.vendor
 
 local Roact = require(Vendor.Roact)
+local Hooks = require(Vendor.Hooks)
 
 local RoundedFrame = require(Components.Generic.RoundedFrame)
 local Dropshadow = require(Components.Generic.Dropshadow)
@@ -11,10 +12,13 @@ local Preview = require(script.Parent.Preview)
 local Control = require(Components.Control.Control)
 
 local e = Roact.createElement
+local hook = Hooks.new(Roact)
 
-local function PreviewZone(props)
+local function PreviewZone(props, hooks)
 	local theme = props.Theme
 	local selected = props.Selected
+
+	local currentPage, setCurrentPage = hooks.useState("Canvas")
 
 	return e("Frame", {
 		Size = UDim2.new(1, -270, 1, -20),
@@ -30,7 +34,7 @@ local function PreviewZone(props)
 			BackgroundColor3 = theme.Background,
 			CornerRadius = UDim.new(0, 5)
 		}, {
-			Topbar = e(Topbar, { Theme = theme }),
+			Topbar = e(Topbar, { SetCurrentPage = setCurrentPage,  Theme = theme }),
 
 			Content = e("ScrollingFrame", {
 				Size = UDim2.new(1, 0, 1, -70),
@@ -46,10 +50,12 @@ local function PreviewZone(props)
 				MidImage = "rbxassetid://6017289904"
 			}, {
 				Preview = e(Preview, { Selected = selected }),
-				Control = e(Control, { Theme = theme, Selected = selected })
+				Control = e(Control, { Visible = currentPage == "Canvas", Theme = theme, Selected = selected })
 			})
 		})
 	})
 end
+
+PreviewZone = hook(PreviewZone)
 
 return PreviewZone

@@ -2,11 +2,14 @@ local Flipbook = script:FindFirstAncestor("Flipbook")
 local Vendor = Flipbook.vendor
 
 local Roact = require(Vendor.Roact)
+local Hooks = require(Vendor.Hooks)
 
 local e = Roact.createElement
+local hook = Hooks.new(Roact)
 
-local function Topbar(props)
+local function Topbar(props, hooks)
 	local theme = props.Theme
+	local selected, setSelected = hooks.useState("Controls")
 
 	return e("Frame", {
 		Size = UDim2.new(1, 0, 0, 50),
@@ -47,7 +50,11 @@ local function Topbar(props)
 					Text = "Controls",
 					Font = Enum.Font.Gotham,
 					TextSize = 16,
-					TextColor3 = theme.Border
+					TextColor3 = selected == "Controls" and theme.Storylist.Selected or theme.Text,
+					[Roact.Event.Activated] = function()
+						setSelected("Controls")
+						props.SetPage("Controls")
+					end
 				}),
 
 				Source = e("TextButton", {
@@ -57,7 +64,11 @@ local function Topbar(props)
 					Text = "Source",
 					Font = Enum.Font.Gotham,
 					TextSize = 16,
-					TextColor3 = theme.Storylist.Selected
+					TextColor3 = selected == "Source" and theme.Storylist.Selected or theme.Text,
+					[Roact.Event.Activated] = function()
+						setSelected("Source")
+						props.SetPage("Source")
+					end
 				})
 
 			}),
@@ -65,10 +76,10 @@ local function Topbar(props)
 		}),
 
 		SelectedBorder = e("Frame", {
-			Size = UDim2.new(0, 65, 0, 4),
+			Size = selected == "Source" and UDim2.new(0, 65, 0, 4) or UDim2.new(0, 70, 0, 4),
 			BorderSizePixel = 0,
 			BackgroundColor3 = theme.Storylist.Selected,
-			Position = UDim2.new(0, 140, 1, -4)
+			Position = selected == "Source" and UDim2.new(0, 140, 1, -4) or UDim2.new(0, 12, 1, -4)
 		}),
 
 		BottomBorder = e("Frame", {
@@ -79,5 +90,6 @@ local function Topbar(props)
 		})
 	})
 end
+Topbar = hook(Topbar)
 
 return Topbar

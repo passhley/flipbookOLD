@@ -9,4 +9,4 @@ PluginToolbar.Init(plugin)
 PluginAppManager.Init(plugin)
 PluginStore.Init()
 
-Flipbook.stories["Welcome.flip"].Parent = game.ReplicatedStorage
+-- Flipbook.stories["Welcome.flip"].Parent = game.ReplicatedStorage

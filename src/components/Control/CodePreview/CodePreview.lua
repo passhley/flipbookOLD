@@ -35,10 +35,12 @@ PopulateTokenToColor()
 local function CodePreview(props)
 	local object = props.Object
 	local children = {}
+	local frameSize = UDim2.new(0, 0, 0, 0)
 
 	if object then
 		local lineHeight = 17
 		local code = object.Source
+		local loc = _GetLineOfCode(code)
 		local maxLineWidth = 0
 		local currentLineWidth = 0
 		local currentLineNum = 0
@@ -121,12 +123,16 @@ local function CodePreview(props)
 		-- 	(loc * lineHeight) + 0 + 0
 		-- )
 		-- codeFrame.Parent = codeFrameParent
+		frameSize = UDim2.new(
+			1, 0, 0, (loc*lineHeight)
+		)
 	end
 
 	return e("Frame", {
-		Size = UDim2.new(1, -20, 1, -60),
+		Size = UDim2.new(1, -20, 0, frameSize.Y.Offset),
 		Position = UDim2.fromOffset(10, 60),
-		BackgroundTransparency = 1
+		BackgroundTransparency = 1,
+		Visible = props.Visible
 	}, children)
 end
 
