@@ -5,57 +5,48 @@ local Rodux = require(Vendor.Rodux)
 
 local Stories = Rodux.createReducer({}, {
 	AddStory = function(state, action)
+		local name = action.Name
+		local location = action.Location
+		local object = action.Object
+
 		local newState = {}
 
 		for folder, stories in pairs(state) do
-			newState[folder] = {}
-
-			for story, data in pairs(stories) do
-				newState[folder][story] = data
-			end
+			newState[folder] = stories
 		end
 
-		if newState[action.Location] == nil then
-			newState[action.Location] = {}
+		if newState[location] == nil then
+			newState[location] = {}
 		end
 
-		table.insert(newState[action.Location], action.StoryData)
+		newState[location][name] = object
 
 		return newState
 	end,
 
 	RemoveStory = function(state, action)
+		local object = action.Object
+
 		local newState = {}
 
 		for folder, stories in pairs(state) do
-			newState[folder] = {}
+			local count = 0
 
-			for _, data in pairs(stories) do
-				if data.Object ~= action.Object then
-					table.insert(newState[folder], data)
+			if newState[folder] == nil then
+				newState[folder] = {}
+			end
+
+			for storyName, story in pairs(stories) do
+				print(object)
+				print(story)
+				if object ~= story then
+					newState[folder][storyName] = story
+					count += 1
 				end
 			end
 
-			if #newState[folder] == 0 then
+			if count > 0 then
 				newState[folder] = nil
-			end
-		end
-
-		return newState
-	end,
-
-	UpdateStory = function(state, action)
-		local newState = {}
-
-		for folder, stories in pairs(state) do
-			newState[folder] = {}
-
-			for _, data in pairs(stories) do
-				if data.Object == action.Object then
-					table.insert(newState[folder], action.StoryData)
-				else
-					table.insert(newState[folder], data)
-				end
 			end
 		end
 

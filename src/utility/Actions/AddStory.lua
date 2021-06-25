@@ -2,11 +2,12 @@ local Flipbook = script:FindFirstAncestor("Flipbook")
 
 local PluginStore = require(Flipbook.plugin.PluginStore)
 
-local function AddStory(location, storyData)
+local function AddStory(location, name, object)
 	PluginStore.Dispatch({
 		type = "AddStory",
 		Location = location,
-		StoryData = storyData
+		Name = name,
+		Object = object
 	})
 end
 

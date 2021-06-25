@@ -71,8 +71,6 @@ function Maid:GiveTask(task)
 		error("Task cannot be false or nil", 2)
 	end
 
-	print("TASK CREATED!")
-
 	local taskId = #self._tasks+1
 	self[taskId] = task
 

@@ -14,9 +14,10 @@ local e = Roact.createElement
 
 local function Navbar(props)
 	local theme = props.Theme or Theme.Light
+	local stories = props.Stories or {}
 
 	return e("Frame", {
-		Size = UDim2.fromScale(1, 1),
+		Size = UDim2.new(0, 250, 1, 0),
 		BackgroundTransparency = 1
 	}, {
 		List = e("UIListLayout", { Padding = UDim.new(0, 20), SortOrder = Enum.SortOrder.LayoutOrder }),
@@ -35,7 +36,7 @@ local function Navbar(props)
 				TextSize = 13,
 				TextColor3 = Theme.Library
 			}),
-			Entries = e(StoryEntries, { Theme = theme })
+			Entries = e(StoryEntries, { Theme = theme, Stories = stories })
 		})
 	})
 end

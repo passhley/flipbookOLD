@@ -20,8 +20,34 @@ function PluginStoryLoader._HandleFile(file)
 		local isStory = StoryUtils.IsStory(file)
 
 		if isFlipbook or isStory then
-			local location = StoryUtils.GetFileLocation(file)
-			Actions.AddStory(location, file)
+			local location, source = StoryUtils.GetFileLocation(file)
+
+			if isStory then
+				Actions.AddStory(location, file.Name, file)
+			elseif isFlipbook then
+				if source then
+					if source.Mount then
+						if typeof(source.Mount) == "table" then
+							local mount = source.Mount
+
+							if mount.Component and mount.States then
+								local states = {}
+
+								for stateName in pairs(mount.States) do
+									-- states[stateName] =
+									table.insert(states, stateName)
+								end
+								Actions.AddStory(location, file.Name, {
+									States = states,
+									Object = file
+								})
+							end
+						else
+							Actions.AddStory(location, file.Name, file)
+						end
+					end
+				end
+			end
 
 			local _maid = Maid.new()
 			_FileMaids[file] = _maid

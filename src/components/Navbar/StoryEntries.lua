@@ -16,16 +16,16 @@ local hook = Hooks.new(Roact)
 
 local function StoryEntries(props, hooks)
 	local theme = props.Theme or Theme.Light
-	local stories = props.Stories or {["Buttons"] = {["Fill Button"] = { "Enabled", "Disabled" }}}
+	local stories = props.Stories or {}
 
 	local canvasSize, setCanvasSize = hooks.useState(0)
 
 	local children = {}
-	for folder, folderStories in pairs(stories) do
+	for folder, containedStories in pairs(stories) do
 		children[folder] = e(Folder, {
-			FolderName = folder,
-			Stories = folderStories,
-			Theme = theme
+			Theme = theme,
+			Name = folder,
+			Stories = containedStories
 		})
 	end
 

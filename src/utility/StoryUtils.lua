@@ -10,19 +10,39 @@ function StoryUtils.IsStory(file)
 		and file.Name:match("%.story$")
 end
 
+function StoryUtils.ClearName(fileName)
+	if fileName:match("%.story$") then
+		return fileName:sub(1, #fileName - #(".story"))
+	elseif fileName:match("%.flip$") then
+		return fileName:sub(1, #fileName - #(".flip"))
+	end
+
+	return
+end
+
 function StoryUtils._SafeRequireFile(file)
-	file = file:Clone()
+	print(("[StoryUtils._SafeRequireFile]: Requiring module [%s]"):format(file.Name))
+	local newFile = file:Clone()
+
+	if StoryUtils.IsFlipbook(file) then
+		newFile.Name = file.Name:sub(1, #file.Name - #".flip")
+	elseif StoryUtils.IsStory(file) then
+		newFile.Name = file.Name:sub(1, #file.Name - #".story")
+	end
+
+	newFile.Parent = file.Parent
 
 	local success, source = pcall(function()
-		return require(file)
+		return require(newFile)
 	end)
+
+	newFile:Destroy()
 
 	if not success then
 		warn(("[StoryUtils._SafeRequireFile]: Error requiring module [%s], %s"):format(file.Name, source))
 		return nil
 	end
 
-	file:Destroy()
 
 	return source
 end
@@ -43,35 +63,11 @@ function StoryUtils.GetStorySource(file)
 	return StoryUtils._SafeRequireFile(file)
 end
 
+function StoryUtils()
+
+end
+
 function StoryUtils.GetFileLocation(file)
-	if StoryUtils.IsStory(file) then
-		local folder = file:FindFirstAncestorWhichIsA("Folder")
-
-		if folder then
-			folder = folder.Name:gsub("^%l", string.upper)
-		else
-			folder = "Unorganized Components"
-		end
-
-		return folder
-	elseif StoryUtils.IsFlipbook(file) then
-		local source = StoryUtils.GetFlipbookSource(file)
-		local location = "Unorganized Components"
-
-		if source then
-			if source.Location then
-				location = source.Location:gsub("^%l", string.upper)
-			else
-				local folder = file:FindFirstAncestorWhichIsA("Folder")
-
-				if folder then
-					location = folder.Name:gsub("^%l", string.upper)
-				end
-			end
-		end
-
-		return location
-	end
 end
 
 function StoryUtils.GetFileName(file)
@@ -80,6 +76,27 @@ function StoryUtils.GetFileName(file)
 	elseif StoryUtils.IsStory(file) then
 		return file.Name:sub(1, #file - #".story")
 	end
+end
+
+function StoryUtils.CalculateFolderSize(storyData)
+	local componentSize = 26
+	local stateSize = 26
+
+	local currentSize = 26
+
+	for _, component in pairs(storyData) do
+		currentSize += componentSize
+
+		if typeof(component) == "table" then
+			if component.States then
+				for _ in pairs(component.States) do
+					currentSize += stateSize
+				end
+			end
+		end
+	end
+
+	return currentSize
 end
 
 return StoryUtils
