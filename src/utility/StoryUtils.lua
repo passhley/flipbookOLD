@@ -1,76 +1,85 @@
-local function _IsAStory(instance)
-	return instance:IsA("ModuleScript") and instance.Name:match("%.story$")
+local StoryUtils = {}
+
+function StoryUtils.IsFlipbook(file)
+	return file:IsA("ModuleScript")
+		and file.Name:match("%.flip$")
 end
 
-local function _IsAFlip(instance)
-	return instance:IsA("ModuleScript") and instance.Name:match("%.flip$")
+function StoryUtils.IsStory(file)
+	return file:IsA("ModuleScript")
+		and file.Name:match("%.story$")
 end
 
-local function _GetSource(obj)
-	local source
-	local success, errorMsg = pcall(function()
-		source = require(obj)
+function StoryUtils._SafeRequireFile(file)
+	file = file:Clone()
+
+	local success, source = pcall(function()
+		return require(file)
 	end)
 
-	if success then
-		print("[flipbook._GetSource]: Success loading source for", obj.Name)
-	else
-		warn("[flipbook._GetSource]: Issue loading source for", obj.Name)
+	if not success then
+		warn(("[StoryUtils._SafeRequireFile]: Error requiring module [%s], %s"):format(file.Name, source))
+		return nil
 	end
 
-	if errorMsg then
-		warn(("[flipbook._GetSource]: Error loading story (%s). Error message: %s"):format(obj.Name, errorMsg))
+	file:Destroy()
+
+	return source
+end
+
+function StoryUtils.GetFlipbookSource(file)
+	local source = StoryUtils._SafeRequireFile(file)
+
+	if source then
+		if typeof(source) == "function" then
+			source = source()
+		end
 	end
 
 	return source
 end
 
-local function _GetContents(child)
-	local isStory = _IsAStory(child)
-	local isFlip = _IsAFlip(child)
-
-	local contents = nil
-	local folder = nil
-
-	if isStory or isFlip then
-		contents = {}
-		local storyName = child.Name
-		local source = _GetSource(child)
-
-		if source then
-			if isFlip then
-				storyName = storyName:sub(1, #storyName - #".flip")
-
-				folder = source.Location
-
-				if folder == nil then
-					folder = child:FindFirstAncestorWhichIsA("Folder")
-
-					if folder then
-						folder = folder.Name
-					end
-				end
-
-				contents.Name = storyName
-				contents.Object = child
-			elseif isStory then
-				folder = child:FindFirstAncestorWhichIsA("Folder")
-				if folder then
-					folder = folder.Name
-				end
-				storyName = storyName:sub(1, #storyName - #".story")
-
-				contents.Name = storyName
-				contents.Object = child
-			end
-		end
-	end
-
-	return contents, folder
+function StoryUtils.GetStorySource(file)
+	return StoryUtils._SafeRequireFile(file)
 end
 
-return {
-	IsFlip = _IsAFlip,
-	IsStory = _IsAStory,
-	GetContents = _GetContents,
-}
+function StoryUtils.GetFileLocation(file)
+	if StoryUtils.IsStory(file) then
+		local folder = file:FindFirstAncestorWhichIsA("Folder")
+
+		if folder then
+			folder = folder.Name:gsub("^%l", string.upper)
+		else
+			folder = "Unorganized Components"
+		end
+
+		return folder
+	elseif StoryUtils.IsFlipbook(file) then
+		local source = StoryUtils.GetFlipbookSource(file)
+		local location = "Unorganized Components"
+
+		if source then
+			if source.Location then
+				location = source.Location:gsub("^%l", string.upper)
+			else
+				local folder = file:FindFirstAncestorWhichIsA("Folder")
+
+				if folder then
+					location = folder.Name:gsub("^%l", string.upper)
+				end
+			end
+		end
+
+		return location
+	end
+end
+
+function StoryUtils.GetFileName(file)
+	if StoryUtils.IsFlipbook(file) then
+		return file.Name:sub(1, #file - #".flip")
+	elseif StoryUtils.IsStory(file) then
+		return file.Name:sub(1, #file - #".story")
+	end
+end
+
+return StoryUtils

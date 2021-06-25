@@ -4,46 +4,42 @@ local Utility = Flipbook.utility
 local HexColor = require(Utility.HexColor)
 
 local Theme = {
+	Brand = HexColor(0x6366F1),
+	Library = HexColor(0xA3A3A3),
+
 	Light = {
-		Brand = HexColor(0x171717),
-		Library = HexColor(0xA3A3A3),
+		Background = HexColor(0xF5F5F5),
 
-		Text = HexColor(0x171717),
-		TextSecondary = HexColor(0x52525B),
+		TextPrimary = HexColor(0x171717),
+		TextSecondary = HexColor(0xCACACF),
 
-		Border = HexColor(0xD4D4D8),
-		BrandIcon = HexColor(0x6366F1),
-		Background = HexColor(0xFFFFFF),
-
-		Storylist = {
-			Background = HexColor(0xF5F5F5),
-			Selected = HexColor(0x6366F1),
-			-- 0x1D94FC
-
+		Icons = {
 			Folder = HexColor(0x504C88),
-			TextSelected = HexColor(0xFFFFF),
-			ComponentSelected = HexColor(0xFFFFF)
+			Component = HexColor(0x5BABE3),
+			State = HexColor(0x3AE662)
+		},
+
+		InputField = {
+			Selected = HexColor(0x6366F1),
+			Background = HexColor(0xFFFFFF)
 		}
 	},
 
 	Dark = {
-		Brand = HexColor(0xFAFAFA),
-		Library = HexColor(0xA3A3A3),
+		Background = HexColor(0x171717),
 
-		Text = HexColor(0xFAFAFA),
+		TextPrimary = HexColor(0xFFFFFF),
 		TextSecondary = HexColor(0x52525B),
 
-		Border = HexColor(0x404040),
-		BrandIcon = HexColor(0x6366F1),
-		Background = HexColor(0x262626),
-
-		Storylist = {
-			Background = HexColor(0x171717),
-			Selected = HexColor(0x1D94FC),
-
+		Icons = {
 			Folder = HexColor(0x504C88),
-			TextSelected = HexColor(0xFFFFF),
-			ComponentSelected = HexColor(0xFFFFF)
+			Component = HexColor(0x5BABE3),
+			State = HexColor(0x3AE662)
+		},
+
+		InputField = {
+			Selected = HexColor(0x6366F1),
+			Background = HexColor(0x171717)
 		}
 	}
 }

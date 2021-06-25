@@ -9,4 +9,6 @@ PluginToolbar.Init(plugin)
 PluginAppManager.Init(plugin)
 PluginStore.Init()
 
+PluginAppManager.ToggleWidget()
+
 -- Flipbook.stories["Welcome.flip"].Parent = game.ReplicatedStorage

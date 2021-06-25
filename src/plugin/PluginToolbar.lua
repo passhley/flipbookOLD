@@ -14,6 +14,7 @@ function PluginToolbar.Init(plugin)
 	flipbookButton.Click:Connect(function()
 		PluginAppManager.ToggleWidget()
 	end)
+	flipbookButton.ClickableWhenViewportHidden = true
 end
 
 return PluginToolbar

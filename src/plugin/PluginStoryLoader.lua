@@ -1,108 +1,83 @@
 local Flipbook = script:FindFirstAncestor("Flipbook")
 local Utility = Flipbook.utility
 
-local StoryUtils = require(Utility.StoryUtils)
 local Maid = require(Utility.Maid)
 local Actions = require(Utility.Actions)
+local StoryUtils = require(Utility.StoryUtils)
 
 local _Maid = Maid.new()
-local _ObjectMaids = {}
-local _Services = { "Workspace", "ReplicatedFirst", "ReplicatedStorage", "ServerScriptService", "ServerStorage", "StarterGui", "StarterPlayer"}
+local _FileMaids = {}
+local _ReadableServices = {
+	"Workspace", "ReplicatedStorage", "ReplicatedFirst",
+	"ServerScriptService", "ServerStorage", "StarterGui", "StarterPlayer"
+}
 
 local PluginStoryLoader = {}
 
-local function _HandleChild(child)
-	if child:IsA("ModuleScript") then
-		local isStory = StoryUtils.IsStory(child)
-		local isFlipbook = StoryUtils.IsFlip(child)
+function PluginStoryLoader._HandleFile(file)
+	if file:IsA("ModuleScript") then
+		local isFlipbook = StoryUtils.IsFlipbook(file)
+		local isStory = StoryUtils.IsStory(file)
 
-		if isStory or isFlipbook then
-			local storyData, location = StoryUtils.GetContents(child)
-			Actions.AddStory(location, storyData)
+		if isFlipbook or isStory then
+			local location = StoryUtils.GetFileLocation(file)
+			Actions.AddStory(location, file)
 
 			local _maid = Maid.new()
-			_ObjectMaids[child] = _maid
+			_FileMaids[file] = _maid
 
-			_maid:GiveTask(child.Changed:Connect(function()
-				local _isStory = StoryUtils.IsStory(child)
-				local _isFlipbook = StoryUtils.IsFlip(child)
+			_maid:GiveTask(file.Changed:Connect(function()
+				local _isStory = StoryUtils.IsStory(file)
+				local _isFlipbook = StoryUtils.IsFlipbook(file)
 
 				if not _isStory and not _isFlipbook then
-					Actions.RemoveStory(child)
-				elseif _isStory or _isFlipbook then
-					-- local c = StoryUtils.GetContents(child)
-					-- Actions.UpdateStory()
+					Actions.RemoveStory(file)
+					_FileMaids[file] = nil
+					_maid:Destroy()
 				end
 			end))
 
-			_maid:GiveTask(child.AncestryChanged:Connect(function()
-				if not child:IsDescendantOf(game) then
-					Actions.RemoveStory(child)
+			_maid:GiveTask(file.AncestryChanged:Connect(function()
+				if not file:IsDescendantOf(game) then
+					Actions.RemoveStory(file)
+					_FileMaids[file] = nil
+					_maid:Destroy()
 				end
 			end))
 		else
-			local change
-			change = child.Changed:Connect(function()
-				local _isStory = StoryUtils.IsStory(child)
-				local _isFlipbook = StoryUtils.IsFlip(child)
-
-				if _isStory or _isFlipbook then
-					local storyData, location = StoryUtils.GetContents(child)
-					Actions.AddStory(location, storyData)
-
-					local _maid = Maid.new()
-					_ObjectMaids[child] = _maid
-
-					_maid:GiveTask(child.Changed:Connect(function()
-						local _isStory = StoryUtils.IsStory(child)
-						local _isFlipbook = StoryUtils.IsFlip(child)
-
-						if not _isStory and not _isFlipbook then
-							Actions.RemoveStory(child)
-						elseif _isStory or _isFlipbook then
-							local c = StoryUtils.GetContents(child)
-							Actions.UpdateStory(c)
-						end
-					end))
-
-					_maid:GiveTask(child.AncestryChanged:Connect(function()
-						if not child:IsDescendantOf(game) then
-							Actions.RemoveStory(child)
-						end
-					end))
-
-					change:Disconnect()
-					change = nil
-				end
+			local fileChanged
+			fileChanged = file.Changed:Connect(function()
+				PluginStoryLoader._HandleFile(file)
+				fileChanged:Disconnect()
+				fileChanged = nil
 			end)
 		end
 	end
 end
 
 function PluginStoryLoader.Enable()
-	Actions.ClearStories()
-
-	for _, serviceName in ipairs(_Services) do
+	for _, serviceName in ipairs(_ReadableServices) do
 		local service = game:GetService(serviceName)
 
-		_Maid:GiveTask(service.DescendantAdded:Connect(function(child)
-			_HandleChild(child)
+		_Maid:GiveTask(service.DescendantAdded:Connect(function(file)
+			PluginStoryLoader._HandleFile(file)
 		end))
 
-		for _, child in ipairs(service:GetDescendants()) do
-			_HandleChild(child)
+		for _, file in ipairs(service:GetDescendants()) do
+			PluginStoryLoader._HandleFile(file)
 		end
 	end
 end
 
 function PluginStoryLoader.Disable()
-	for _, maid in pairs(_ObjectMaids) do
+	for _, maid in pairs(_FileMaids) do
 		maid:Destroy()
 	end
-	_ObjectMaids = {}
+	_FileMaids = {}
 
 	Actions.ClearStories()
 	_Maid:DoCleaning()
 end
+
 
 return PluginStoryLoader

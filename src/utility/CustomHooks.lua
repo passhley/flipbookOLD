@@ -8,8 +8,6 @@ local GetStudio = require(Utility.GetStudio)
 
 local function useTheme(hooks)
 	local useState, useEffect = hooks.useState, hooks.useEffect
-
-
 	local theme, setTheme = useState(Theme.Light)
 
 	useEffect(function()

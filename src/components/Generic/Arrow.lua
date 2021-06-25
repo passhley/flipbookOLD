@@ -15,16 +15,13 @@ local DIRECTION_MAP = {
 }
 
 local function Arrow(props)
-	local theme = props.Theme
 	local direction = props.Direction or "Right"
-
-	props.Theme = nil
 	props.Direction = nil
 
 	return e("ImageLabel", MergeTables(props, {
 		BackgroundTransparency = 1,
 		Image = DIRECTION_MAP[direction],
-		ImageColor3 = theme.Border
+		ImageColor3 = props.ImageColor3 or Color3.new(0, 0, 0)
 	}))
 end
 
