@@ -1,14 +1,15 @@
 local Flipbook = script:FindFirstAncestor("Flipbook")
-local Plugin = Flipbook.plugin
+local Vendor = Flipbook.vendor
+local Utility = Flipbook.utility
 
-local PluginToolbar = require(Plugin.PluginToolbar)
-local PluginAppManager = require(Plugin.PluginAppManager)
-local PluginStore = require(Plugin.PluginStore)
+local Roact = require(Vendor.Roact)
+local App = require(Flipbook.App)
 
-PluginToolbar.Init(plugin)
-PluginAppManager.Init(plugin)
-PluginStore.Init()
+local e = Roact.createElement
 
-PluginAppManager.ToggleWidget()
+local app = Roact.createElement(App, { plugin = plugin })
+local tree = Roact.mount(app, nil, "flipbook")
 
--- Flipbook.stories["Welcome.flip"].Parent = game.ReplicatedStorage
+-- plugin.Unloading:Connect(function()
+-- 	Roact.unmount(tree)
+-- end)

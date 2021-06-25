@@ -4,9 +4,12 @@
 		"description": "Set's up the constants for a module.",
 		"body": [
 			"local Flipbook = script:FindFirstAncestor(\"Flipbook\")",
-			"local Components = Flipbook.components",
 			"local Vendor = Flipbook.vendor",
-			"local Utility = Flipbook.utility"
+			"local Utility = Flipbook.utility\n",
+			"local Roact = require(Vendor.Roact)",
+			"local Hooks = require(Vendor.Hooks)\n",
+			"local e = Roact.createElement",
+			"local hook = Hooks.new(Roact)"
 		]
 	}
 }
