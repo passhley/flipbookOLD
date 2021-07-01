@@ -6,22 +6,26 @@ local Roact = require(Vendor.Roact)
 local Rodux = require(Vendor.Rodux)
 local RoactRodux = require(Vendor.RoactRodux)
 local Hooks = require(Vendor.Hooks)
-local Reducer = require(Utility.Reducer)
+local CustomHooks = require(Utility.CustomHooks)
 
 local StudioContext = require(script.Studio.StudioContext)
 local StudioToolbar = require(script.Studio.StudioToolbar)
 local StudioButton = require(script.Studio.StudioButton)
 local StudioWidget = require(script.Studio.StudioWidget)
+local Navbar = require(script.Sections.Navbar.Navbar)
+local Content = require(script.Sections.Content.Content)
 
 local e = Roact.createElement
 local hook = Hooks.new(Roact)
-local store = Rodux.Store.new(Reducer)
+local useTheme = CustomHooks.useTheme
 
 local function App(props, hooks)
 	local useState = hooks.useState
 
 	local plugin = props.plugin
+	local store = props.store
 	local enabled, setEnabled = useState(false)
+	local theme = useTheme(hooks)
 
 	return e(RoactRodux.StoreProvider, {
 		store = store
@@ -29,7 +33,7 @@ local function App(props, hooks)
 		e(StudioContext.pluginContext.Provider, {
 			value = plugin
 		}, {
-			gui = e(StudioWidget, {
+			gui = enabled and e(StudioWidget, {
 				id = "flipbook",
 				title = "flipbook",
 				active = enabled,
@@ -49,7 +53,17 @@ local function App(props, hooks)
 				onClose = function()
 					setEnabled(false)
 				end
-			}),
+			}, {
+
+				container = e("Frame", {
+					Size = UDim2.fromScale(1, 1),
+					BorderSizePixel = 0,
+					BackgroundColor3 = theme.Background
+				}, {
+					navbar = e(Navbar, { Theme = theme }),
+					content = e(Content, { Theme = theme })
+				})
+			}) or nil,
 
 			toolbar = e(StudioToolbar, { name = "flipbook" }, {
 				button = e(StudioButton, {

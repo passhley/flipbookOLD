@@ -1,7 +1,4 @@
-local Flipbook = script:FindFirstAncestor("Flipbook")
-local Utility = Flipbook.utility
-
-local HexColor = require(Utility.HexColor)
+local HexColor = require(script.Parent.HexColor)
 
 local Theme = {
 	Brand = HexColor(0x6366F1),
@@ -9,14 +6,19 @@ local Theme = {
 
 	Light = {
 		Background = HexColor(0xF5F5F5),
+		CanvasBackground = HexColor(0xFFFFFF),
 
 		TextPrimary = HexColor(0x171717),
 		TextSecondary = HexColor(0xCACACF),
 
 		Icons = {
-			Folder = HexColor(0x504C88),
-			Component = HexColor(0x5BABE3),
-			State = HexColor(0x3AE662)
+			Directory = HexColor(0x504C88),
+			ComponentGroup = HexColor(0x5BABE3),
+			File = HexColor(0x3AE662)
+		},
+
+		Navbar = {
+			Selected = HexColor(0x6366F1)
 		},
 
 		InputField = {
@@ -26,15 +28,20 @@ local Theme = {
 	},
 
 	Dark = {
-		Background = HexColor(0x171717),
+		Background = HexColor(0x131313),
+		CanvasBackground = HexColor(0x1A1A1A),
 
 		TextPrimary = HexColor(0xFFFFFF),
 		TextSecondary = HexColor(0x52525B),
 
 		Icons = {
-			Folder = HexColor(0x504C88),
-			Component = HexColor(0x5BABE3),
-			State = HexColor(0x3AE662)
+			Directory = HexColor(0x504C88),
+			ComponentGroup = HexColor(0x5BABE3),
+			File = HexColor(0x3AE662)
+		},
+
+		Navbar = {
+			Selected = HexColor(0x6366F1)
 		},
 
 		InputField = {

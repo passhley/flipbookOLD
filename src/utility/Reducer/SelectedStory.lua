@@ -3,14 +3,14 @@ local Vendor = Flipbook.vendor
 
 local Rodux = require(Vendor.Rodux)
 
-local SelectedStory = Rodux.createReducer({}, {
-	SetSelectedStory = function(state, action)
-		if state == action.Object then
-			return nil
+local selectedStory = Rodux.createReducer({}, {
+	setSelectedStory = function(state, action)
+		if state == action.file then
+			return {}
 		end
 
-		return action.Object
+		return action.file
 	end
 })
 
-return SelectedStory
+return selectedStory

@@ -18,11 +18,12 @@ local function getFileFolder(file)
 
 	if folder then
 		return folder.Name
+	else
+		return file.Parent.Name
 	end
 end
 
 local function getFileSource(file)
-	print(("[FileUtils.getFileSource]: Requiring module [%s]"):format(file.Name))
 	local newFile = file:Clone()
 	newFile.Name = getFileName(file)
 	newFile.Parent = file.Parent
@@ -32,6 +33,13 @@ local function getFileSource(file)
 	end)
 
 	newFile:Destroy()
+
+	local isFlip = fileIsFlipbook(file)
+	if isFlip then
+		if typeof(source) == "function" then
+			source = source()
+		end
+	end
 
 	if not success then
 		warn(("[FileUtils.getFileSource]: Error requiring module [%s], %s"):format(file.Name, source))
@@ -84,5 +92,6 @@ return {
 	fileIsStory = fileIsStory,
 	getFileName = getFileName,
 	getFileSource = getFileSource,
-	getFileLocation = getFileLocation
+	getFileLocation = getFileLocation,
+	getFlipMetadata = getFlipMetadata,
 }

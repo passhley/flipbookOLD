@@ -3,8 +3,8 @@ local Utility = Flipbook.utility
 local Vendor = Flipbook.vendor
 
 local Flipper = require(Vendor.Flipper)
-local Theme = require(Utility.Theme)
-local GetStudio = require(Utility.GetStudio)
+local Theme = require(Utility.Theme.Theme)
+local GetStudio = require(Utility.Theme.GetStudio)
 
 local function useTheme(hooks)
 	local useState, useEffect = hooks.useState, hooks.useEffect
