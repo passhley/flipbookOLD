@@ -6,6 +6,7 @@ local Roact = require(Vendor.Roact)
 local RoactRodux = require(Vendor.RoactRodux)
 local Hooks = require(Vendor.Hooks)
 local MergeTables = require(Utility.MergeTables)
+local Theme = require(Utility.Theme.Theme)
 
 local Icon = require(script.Parent.Icon)
 local TextLabel = require(script.Parent.TextLabel)
@@ -23,7 +24,9 @@ local function File(props, hooks)
 
 	return e("Frame", {
 		Size = UDim2.new(1, 0, 0, 26),
-		BackgroundTransparency = selected and 0 or 1
+		BackgroundTransparency = selected and 0 or 1,
+		BackgroundColor3 = Theme.Brand,
+		BorderSizePixel = 0
 	}, {
 		Padding = e("UIPadding", { PaddingLeft = UDim.new(0, 10*indent)}),
 
@@ -40,7 +43,7 @@ local function File(props, hooks)
 			Position = UDim2.fromOffset(45, 0),
 			Font = Enum.Font.Gotham,
 			Text = props.FileData.title,
-			TextColor3 = theme.TextPrimary,
+			TextColor3 = selected and Color3.new(1, 1, 1) or theme.TextPrimary,
 			TextSize = 14,
 			TextXAlignment = Enum.TextXAlignment.Left
 		}),

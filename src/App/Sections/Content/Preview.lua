@@ -140,28 +140,22 @@ function Preview:previewFile()
 					end
 				end
 
-				self.currentComponent = component
-
-				local handle = nil
-				local executionSuccess, errorMsg = pcall(function()
-					local element = Roact.createElement(self.currentComponent)
-					handle = Roact.mount(
-						element,
-						previewZone
-					)
-				end)
-
-				if errorMsg then
-					warn(errorMsg)
-				end
-
-				if not executionSuccess then
-					warn("[Flipbook]: Issue executing file: " .. handle)
+				local thisRoact = metadata.libraryPath
+				if thisRoact == nil then
+					warn("[Flipbook]: Must provide Roact as 'libraryPath' in metadata when using Roact library")
 					return
 				end
 
-				self.cleanup = function()
-					Roact.unmount(handle)
+				local success, handle = xpcall(function()
+					return thisRoact.mount(thisRoact.createElement(component, defaultProps), previewZone)
+				end, debug.traceback)
+
+				if success and handle then
+					self.cleanup = function()
+						if handle then
+							Roact.unmonut(handle)
+						end
+					end
 				end
 			else
 				local success, cleanup, returnedComponent = xpcall(function()
@@ -195,7 +189,7 @@ end
 
 function Preview:render()
 	return e("Frame", {
-		Size = UDim2.new(1, 0, 0, 300),
+		Size = UDim2.new(1, 0, 0, 600),
 		BackgroundTransparency = 1,
 		[Roact.Ref] = self.previewZone
 	})

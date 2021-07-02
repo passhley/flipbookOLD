@@ -38,16 +38,15 @@ local function useTheme(hooks)
 end
 
 local function useSingleMotor(initialValue, hooks)
+	warn("USE SINGLE MOTOR!!!!!")
 	local useBinding = hooks.useBinding
 
 	local motor = Flipper.SingleMotor.new(initialValue)
 	local spring, setBinding = useBinding(motor:getValue())
 	motor:onStep(setBinding)
 
-	local function setSpring(value, options)
-		motor:setGoal(
-			Flipper.Spring.new(value, options)
-		)
+	local function setSpring(...)
+		motor:setGoal(...)
 	end
 
 	return spring, setSpring
@@ -60,13 +59,8 @@ local function useGroupMotor(initialValue, hooks)
 	local spring, setBinding = useBinding(motor:getValue())
 	motor:onStep(setBinding)
 
-	local function setSpring(values)
-		local springs = {}
-		for k, v in pairs(values) do
-			springs[k] = Flipper.Spring.new(v[1], v[2])
-		end
-
-		motor:setGoal(springs)
+	local function setSpring(...)
+		motor:setGoal(...)
 	end
 
 	return spring, setSpring

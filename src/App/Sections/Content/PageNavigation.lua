@@ -4,6 +4,7 @@ local Utility = Flipbook.utility
 
 local Roact = require(Vendor.Roact)
 local Hooks = require(Vendor.Hooks)
+local Flipper = require(Vendor.Flipper)
 local CustomHooks = require(Utility.CustomHooks)
 
 local e = Roact.createElement
@@ -19,9 +20,9 @@ local function PageNavigation(props, hooks)
 
 	hooks.useEffect(function()
 		if selected == "Docs" then
-			setCanvasSpring(1)
+			setCanvasSpring(Flipper.Spring.new(1))
 		elseif selected == "Canvas" then
-			setDocsSpring(1)
+			setDocsSpring(Flipper.Spring.new(1))
 		end
 	end, { selected })
 
@@ -49,11 +50,11 @@ local function PageNavigation(props, hooks)
 			end),
 
 			[Roact.Event.MouseEnter] = function()
-				setCanvasSpring(0.8)
+				setCanvasSpring(Flipper.Spring.new(0.8))
 			end,
 
 			[Roact.Event.MouseLeave] = function()
-				setCanvasSpring(1)
+				setCanvasSpring(Flipper.Spring.new(1))
 			end,
 
 			[Roact.Event.Activated] = function()
@@ -75,11 +76,11 @@ local function PageNavigation(props, hooks)
 			end),
 
 			[Roact.Event.MouseEnter] = function()
-				setDocsSpring(0.8)
+				setDocsSpring(Flipper.Spring.new(0.8))
 			end,
 
 			[Roact.Event.MouseLeave] = function()
-				setDocsSpring(1)
+				setDocsSpring(Flipper.Spring.new(1))
 			end,
 
 			[Roact.Event.Activated] = function()

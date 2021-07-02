@@ -24,6 +24,13 @@ local Theme = {
 		InputField = {
 			Selected = HexColor(0x6366F1),
 			Background = HexColor(0xFFFFFF)
+		},
+
+		ColorPicker = {
+			Background = HexColor(0xF2F2F2),
+			HeaderText = HexColor(0xB7B6B6),
+			ColorBox = HexColor(0xDBD9D9),
+			ColorBoxText = HexColor(0x000000)
 		}
 	},
 
@@ -47,6 +54,13 @@ local Theme = {
 		InputField = {
 			Selected = HexColor(0x6366F1),
 			Background = HexColor(0x171717)
+		},
+
+		ColorPicker = {
+			Background = HexColor(0x131313),
+			HeaderText = HexColor(0x52525B),
+			ColorBox = HexColor(0x1C1C1C),
+			ColorBoxText = HexColor(0xFFFFFF)
 		}
 	}
 }
